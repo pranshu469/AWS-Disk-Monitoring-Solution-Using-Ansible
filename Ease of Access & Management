@@ -1,0 +1,33 @@
+1.1 How will you securely manage VMs across multiple accounts/projects?
+
+Set up AWS Organizations and Accounts
+* Ensure all your AWS accounts are part of an AWS Organization with Control Tower (it will create landing zones as part of baseline).
+* Designate a centralized management account (often called the Master or Management account) for consolidated control. 
+
+Enable AWS Systems Manager Default Host Management Configuration Across Organization
+* Default Host Management Configuration ensures that all EC2 instances are automatically managed by Systems Manager. Hence, you no longer are required to attach an IAM instance profile to the EC2 instance in order to register the node with Systems Manager.
+* Use the Systems Manager Quick Setup feature in the management account to enable Default Host Management Configuration (DHMC) across all accounts and regions within the AWS Organization.
+* This feature automatically configures IAM roles and attaches required permissions to EC2 instances so they can register with Systems Manager without needing manual IAM instance profile attachment.
+* This ensures all EC2 instances are automatically managed by Systems Manager regardless of the account or region, improving compliance and security posture.
+[+] Manage instances using AWS Systems Manager Quick Setup across AWS Organization : https://aws.amazon.com/blogs/mt/manage-instances-using-aws-systems-manager-quick-setup-across-aws-organization/
+[+] Enable management of your Amazon EC2 instances in AWS Systems Manager using Default Host Management Configuration
+:  https://aws.amazon.com/blogs/mt/enable-management-of-your-amazon-ec2-instances-in-aws-systems-manager-using-default-host-management-configuration/
+
+Configure Cross-Account Access Permissions Using IAM and AWS Resource Access Manager (RAM)
+* Create IAM roles in member accounts that grant Systems Manager permissions to manage instances.
+* Create a role in the management account with permissions to assume these roles in member accounts, enabling centralized Systems Manager operations.
+* Use AWS RAM to share Systems Manager resources such as Automation documents or Resource Groups across accounts if needed. This approach follows the principle of least privilege by granting only required permissions at the right scope.
+* Verify EC2 instances in all accounts have the Systems Manager Agent installed and running (typically pre-installed in Amazon Linux 2, if not we can use SSM Automation and custom Config rules remediation to ensure all VMs have Systems Manager Agent installed and running)
+
+
+1.2 How will Ansible connect or collect data from the VMs reliably and securely ?
+
+* Install Ansible on newly created EC2 instances using State Manager and Run Command.
+* Document Parameters The “AWS-RunAnsiblePlaybook” document has a few parameters that can be used to execute playbooks locally: a) Playbook – Use this parameter if you would like to pass the YAML text for the playbook directly b) Playbookurl – Use this parameter if you would like to specify a URL where the playbook file is stored. The URL can be a web (http or https) or an s3 URL in the form of s3://bucket-name/playbook.yml . For s3 URL there is a pre-requisite of the AWS Command line tools c) Extravars – This is a string list of additional variables that will be passed to Ansible for the execution of the playbook d) Check – This flag tells Ansible not to execute the actions of the playbook, but try to predict the outcome and log it. This is helpful for testing playbook execution  [+] https://aws.amazon.com/blogs/mt/running-ansible-playbooks-using-ec2-systems-manager-run-command-and-state-manager/        Better security
+    * There is no need to open incoming ports to remotely execute the directives. This eliminates the need for using SSH
+    * You can use IAM to restrict and control access to the platform
+    * All command execution is audited via AWS Cloudtrail  Performance and reliability
+    * Asynchronous execution of commands
+    * Commands are delivered and executed even when the system comes back from being offline
+    * Execute at scale by taking advantage of velocity control
+    * Control deployment rate if errors increase during deployment
