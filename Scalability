@@ -1,0 +1,12 @@
+* Use Systems Manager Resource Groups to organize and target EC2 instances across accounts based on tags, names, or IDs. These groups enable managing instances at scale.
+
+* Use Systems Manager Explorer for aggregated visibility of instance compliance status
+    * Launching a new EC2 instance/VM will automatically be registered with AWS Systems Manager
+
+* This approach allows disk usage data collection across multiple VMs without requiring direct SSH/RDP access to each instance.
+
+* No open inbound ports and no need to manage bastion hosts or SSH keys- Session Manager helps you improve your security posture by letting you close these inbound ports, freeing you from managing SSH keys and certificates, bastion hosts, and jump boxes.
+
+* Scalability: Efficiently run commands across a fleet of instances.
+
+* Enhances Security: Ensures only authenticated users can access specific resources. Also, it manages session timeouts and invalidation to prevent unauthorized access.
