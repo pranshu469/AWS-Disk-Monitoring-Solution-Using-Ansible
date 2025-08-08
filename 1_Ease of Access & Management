@@ -1,4 +1,4 @@
-1.1 How will you securely manage VMs across multiple accounts/projects?
+# 1.1 How will you securely manage VMs across multiple accounts/projects?
 
 Set up AWS Organizations and Accounts
 * Ensure all your AWS accounts are part of an AWS Organization with Control Tower (it will create landing zones as part of baseline).
@@ -20,7 +20,7 @@ Configure Cross-Account Access Permissions Using IAM and AWS Resource Access Man
 * Verify EC2 instances in all accounts have the Systems Manager Agent installed and running (typically pre-installed in Amazon Linux 2, if not we can use SSM Automation and custom Config rules remediation to ensure all VMs have Systems Manager Agent installed and running)
 
 
-1.2 How will Ansible connect or collect data from the VMs reliably and securely ?
+# 1.2 How will Ansible connect or collect data from the VMs reliably and securely ?
 
 * Install Ansible on newly created EC2 instances using State Manager and Run Command.
 * Document Parameters The “AWS-RunAnsiblePlaybook” document has a few parameters that can be used to execute playbooks locally: a) Playbook – Use this parameter if you would like to pass the YAML text for the playbook directly b) Playbookurl – Use this parameter if you would like to specify a URL where the playbook file is stored. The URL can be a web (http or https) or an s3 URL in the form of s3://bucket-name/playbook.yml . For s3 URL there is a pre-requisite of the AWS Command line tools c) Extravars – This is a string list of additional variables that will be passed to Ansible for the execution of the playbook d) Check – This flag tells Ansible not to execute the actions of the playbook, but try to predict the outcome and log it. This is helpful for testing playbook execution  [+] https://aws.amazon.com/blogs/mt/running-ansible-playbooks-using-ec2-systems-manager-run-command-and-state-manager/        Better security
